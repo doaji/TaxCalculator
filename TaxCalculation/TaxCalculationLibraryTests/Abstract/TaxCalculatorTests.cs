@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TaxCalculationLibrary.Service;
+using TaxCalculationLibrary.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,89 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TaxCalculationLibrary.Model;
 
-namespace TaxCalculationLibrary.Service.Tests
+namespace TaxCalculationLibrary.Abstract.Tests
 {
     [TestClass()]
-    public class TaxServiceTests
+    public class TaxCalculatorTests
     {
-        [TestMethod()]
-        public void GetTaxCalculationNullCalculatorTest()
-        {
-            TaxJarCalculationRequest jarCalculationRequest = new TaxJarCalculationRequest
-            {
-                from_country = "US",
-                from_zip = "92093",
-                from_state = "CA",
-                from_city = "La Jolla",
-                from_street = "9500 Gilman Drive",
-                to_country = "US",
-                to_zip = "90002",
-                to_state = "CA",
-                to_city = "Los Angeles",
-                to_street = "1335 E 103rd St",
-                amount = 15,
-                shipping = 1.5F,
-                nexus_addresses = new List<TaxJarAddress> {
-    new TaxJarAddress {
-      id = "Main Location",
-      country = "US",
-      zip = "92093",
-      state = "CA",
-      city = "La Jolla",
-      street = "9500 Gilman Drive",
-    }
-  },
-                line_items = new List<TaxJarLineItem> {
-    new TaxJarLineItem {
-      id = "1",
-      quantity = 1,
-      product_tax_code = "20010",
-      unit_price = 15,
-      discount = 0
-    }
-  }
-            };
-            Calculators.TaxJar taxJar = null;
-            using (var service = Factory.GetTaxService(taxJar))
-            {
-                try
-                {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
-            }
-        }
-
-        [TestMethod()]
-        public void GetTaxRateNullCalculatorTest()
-        {
-            TaxJarRateRequest taxRateRequest = new TaxJarRateRequest
-            {
-                Street = "312 Hurricane Lane",
-                City = "Williston",
-                State = "VT",
-                Country = "US",
-                Zip = "05495-2086"
-            };
-            Calculators.TaxJar taxJar = null;
-            using (var service = TaxCalculationLibrary.Service.Factory.GetTaxService(taxJar))
-            {
-                try
-                {
-                    TaxJarRateResponse result = service.GetTaxRate(taxRateRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
-            }
-        }
-
         [TestMethod()]
         public void GetTaxCalculationBadCalculatorNoAPIKeyTest()
         {
@@ -128,17 +50,14 @@ namespace TaxCalculationLibrary.Service.Tests
   }
             };
             Calculators.TaxJar taxJar = new Calculators.TaxJar("", "https://api.taxjar.com/v2/taxes", "");
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarCalculationResponse result2 = taxJar.CalculateTaxForOrder(jarCalculationRequest);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
 
@@ -155,17 +74,14 @@ namespace TaxCalculationLibrary.Service.Tests
                 Zip = "05495-2086"
             };
             TaxCalculationLibrary.Calculators.TaxJar taxJar = new TaxCalculationLibrary.Calculators.TaxJar("", "", taxRateApiendpoint);
-            using (var service = TaxCalculationLibrary.Service.Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarRateResponse result = service.GetTaxRate(taxRateRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarRateResponse result = taxJar.GetTaxRate(taxRateRequest);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
 
@@ -209,17 +125,14 @@ namespace TaxCalculationLibrary.Service.Tests
   }
             };
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "https://api.taxjar.com/v2/taxes", "");
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
-                    Assert.IsNotNull(result2);
-                }
-                catch (Exception ex)
-                {
-                    Assert.Fail(ex.Message);
-                }
+                TaxJarCalculationResponse result2 = taxJar.CalculateTaxForOrder(jarCalculationRequest);
+                Assert.IsNotNull(result2);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
             }
         }
 
@@ -237,17 +150,14 @@ namespace TaxCalculationLibrary.Service.Tests
                 Zip = "05495-2086"
             };
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "", taxRateApiendpoint);
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarRateResponse result = service.GetTaxRate(taxRateRequest);
-                    Assert.IsNotNull(result);
-                }
-                catch (Exception ex)
-                {
-                    Assert.Fail(ex.Message);
-                }
+                TaxJarRateResponse result = taxJar.GetTaxRate(taxRateRequest);
+                Assert.IsNotNull(result);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
             }
         }
 
@@ -257,17 +167,14 @@ namespace TaxCalculationLibrary.Service.Tests
             string apikey = "5da2f821eee4035db4771edab942a4cc";
 
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "https://api.taxjar.com/v2/taxes", "");
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(null);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarCalculationResponse result2 = taxJar.CalculateTaxForOrder(null);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
 
@@ -277,17 +184,14 @@ namespace TaxCalculationLibrary.Service.Tests
             string taxRateApiendpoint = "https://api.taxjar.com/v2/rates";
             string apikey = "5da2f821eee4035db4771edab942a4cc";
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "", taxRateApiendpoint);
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarRateResponse result = service.GetTaxRate(null);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarRateResponse result = taxJar.GetTaxRate(null);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
 
@@ -330,17 +234,14 @@ namespace TaxCalculationLibrary.Service.Tests
   }
             };
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "https://api.taxjar.com/v2/taxes", "");
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarCalculationResponse result2 = taxJar.CalculateTaxForOrder(jarCalculationRequest);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
 
@@ -357,17 +258,14 @@ namespace TaxCalculationLibrary.Service.Tests
                 Country = "US"
             };
             Calculators.TaxJar taxJar = new Calculators.TaxJar(apikey, "", taxRateApiendpoint);
-            using (var service = Factory.GetTaxService(taxJar))
+            try
             {
-                try
-                {
-                    TaxJarRateResponse result = service.GetTaxRate(taxRateRequest);
-                    Assert.Fail("Should throw exception");
-                }
-                catch (Exception ex)
-                {
-                    Assert.IsNotNull(ex);
-                }
+                TaxJarRateResponse result = taxJar.GetTaxRate(taxRateRequest);
+                Assert.Fail("Should throw exception");
+            }
+            catch (Exception ex)
+            {
+                Assert.IsNotNull(ex);
             }
         }
     }
