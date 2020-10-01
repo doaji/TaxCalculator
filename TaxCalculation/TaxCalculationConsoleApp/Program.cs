@@ -63,8 +63,7 @@ namespace TaxCalculationConsoleApp
             {
                 try
                 {
-                    TaxJarRateResponse result = service.GetTaxRate(taxRateRequest);
-                    Console.WriteLine(result.Jsonify());
+                    Console.WriteLine(service.GetTaxRate(taxRateRequest).Jsonify());
                 }
                 catch (Exception ex)
                 {
@@ -73,8 +72,7 @@ namespace TaxCalculationConsoleApp
 
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
-                    Console.WriteLine(result2.Jsonify());
+                    Console.WriteLine(service.GetTaxCalculationForOrder(jarCalculationRequest).Jsonify());
                 }
                 catch (Exception ex)
                 {
