@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using TaxCalculationLibrary.Abstract;
 using TaxCalculationLibrary.Helpers;
 using TaxCalculationLibrary.Interface;
@@ -16,7 +19,36 @@ namespace TaxCalculationLibrary.Calculators
         {
         }
 
-        public override string BuildTaxRateAPIUrl(TaxJarRateRequest request)
+        private async Task<TaxJarCalculationResponse> CalculateTax(TaxJarCalculationRequest request)
+        {
+            string json = request.Jsonify();
+            StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", APIKEY);
+            string url = TaxCalculationApiEndPoint;
+
+            using (HttpResponseMessage response = await httpClient.PostAsync(url, data))
+            {
+                response.EnsureSuccessStatusCode();
+                string result = response.Content.ReadAsStringAsync().Result;
+                return result.UnJsonify<TaxJarCalculationResponse>();
+            }
+        }
+
+        private async Task<TaxJarRateResponse> CalculateTaxRate(TaxJarRateRequest request)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", APIKEY);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            string url = BuildTaxRateAPIUrl(request);
+
+            using (HttpResponseMessage response = await httpClient.GetAsync(url))
+            {
+                response.EnsureSuccessStatusCode();
+                string result = response.Content.ReadAsStringAsync().Result;
+                return result.UnJsonify<TaxJarRateResponse>();
+            }
+        }
+
+        private string BuildTaxRateAPIUrl(TaxJarRateRequest request)
         {
             if (request is null)
             {
@@ -36,7 +68,7 @@ namespace TaxCalculationLibrary.Calculators
             return url.ToString();
         }
 
-        public override bool ValidateTaxCalculationRequest(TaxJarCalculationRequest request)
+        protected override bool ValidateTaxCalculationRequest(TaxJarCalculationRequest request)
         {
             if (base.ValidateTaxCalculationRequest(request))
             {
@@ -52,13 +84,51 @@ namespace TaxCalculationLibrary.Calculators
             return !nexus_addresses?.Any(item => item.country.IsEmpty() || item.state.IsEmpty()) ?? true;
         }
 
-        public override bool ValidateTaxRateRequest(TaxJarRateRequest request)
+        protected override bool ValidateTaxRateRequest(TaxJarRateRequest request)
         {
             if (base.ValidateTaxRateRequest(request))
             {
                 return (request.IsInternationalAddress ? request.Country.IsNotEmpty() : true) && request.Zip.IsNotEmpty();
             }
             return false;
+        }
+
+        public override TaxJarCalculationResponse CalculateTaxForOrder(TaxJarCalculationRequest request)
+        {
+            if (ValidateTaxCalculationRequest(request))
+            {
+                try
+                {
+                    return CalculateTax(request).Result;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                throw new Exception("Bad Request");
+            }
+        }
+
+        public override TaxJarRateResponse GetTaxRate(TaxJarRateRequest request)
+        {
+            if (ValidateTaxRateRequest(request))
+            {
+                try
+                {
+                    return CalculateTaxRate(request).Result;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            else
+            {
+                throw new Exception("Bad Request");
+            }
         }
     }
 }

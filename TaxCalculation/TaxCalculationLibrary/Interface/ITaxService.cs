@@ -15,7 +15,7 @@ namespace TaxCalculationLibrary.Interface
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        TTaxCalculationResponse GetTaxCalculation(TTaxCalculationRequest request);
+        TTaxCalculationResponse GetTaxCalculationForOrder(TTaxCalculationRequest request);
 
         /// <summary>
         /// Get the sales tax rates for a given location.

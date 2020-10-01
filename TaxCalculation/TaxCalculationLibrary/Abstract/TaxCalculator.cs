@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TaxCalculationLibrary.Helpers;
@@ -14,10 +15,11 @@ namespace TaxCalculationLibrary.Abstract
                  where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
-        public string TaxCalculationApiEndPoint { get; private set; }
+        protected static readonly HttpClient httpClient = new HttpClient();
+        protected string TaxCalculationApiEndPoint { get; private set; }
 
-        public string APIKEY { get; private set; }
-        public string TaxRateApiEndPoint { get; private set; }
+        protected string APIKEY { get; private set; }
+        protected string TaxRateApiEndPoint { get; private set; }
 
         public TaxCalculator(string apiKey, string taxCalculationApiEndPoint, string taxRateApiEndPoint)
         {
@@ -26,21 +28,23 @@ namespace TaxCalculationLibrary.Abstract
             TaxRateApiEndPoint = taxRateApiEndPoint;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             APIKEY = TaxCalculationApiEndPoint = TaxRateApiEndPoint = null;
         }
 
-        public virtual bool ValidateTaxRateRequest(TTaxRateRequest request)
+        protected virtual bool ValidateTaxRateRequest(TTaxRateRequest request)
         {
             return request != null && TaxRateApiEndPoint.IsNotEmpty() && APIKEY.IsNotEmpty();
         }
 
-        public virtual bool ValidateTaxCalculationRequest(TTaxCalculationRequest request)
+        protected virtual bool ValidateTaxCalculationRequest(TTaxCalculationRequest request)
         {
             return request != null && TaxCalculationApiEndPoint.IsNotEmpty() && APIKEY.IsNotEmpty();
         }
 
-        public abstract string BuildTaxRateAPIUrl(TTaxRateRequest request);
+        public abstract TTaxCalculationResponse CalculateTaxForOrder(TTaxCalculationRequest request);
+
+        public abstract TTaxRateResponse GetTaxRate(TTaxRateRequest request);
     }
 }

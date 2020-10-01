@@ -54,7 +54,7 @@ namespace TaxCalculationLibrary.Service.Tests
             {
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculation(jarCalculationRequest);
+                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
                     Assert.Fail("Should throw exception");
                 }
                 catch (Exception ex)
@@ -135,7 +135,7 @@ namespace TaxCalculationLibrary.Service.Tests
             {
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculation(jarCalculationRequest);
+                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
                     Assert.IsNotNull(result2);
                 }
                 catch (Exception ex)
@@ -183,7 +183,7 @@ namespace TaxCalculationLibrary.Service.Tests
             {
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculation(null);
+                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(null);
                     Assert.Fail("Should throw exception");
                 }
                 catch (Exception ex)
@@ -256,7 +256,7 @@ namespace TaxCalculationLibrary.Service.Tests
             {
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculation(jarCalculationRequest);
+                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
                     Assert.Fail("Should throw exception");
                 }
                 catch (Exception ex)

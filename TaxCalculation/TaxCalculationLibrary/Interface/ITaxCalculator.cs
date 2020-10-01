@@ -13,14 +13,8 @@ namespace TaxCalculationLibrary.Interface
          where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
-        string TaxCalculationApiEndPoint { get; }
-        string TaxRateApiEndPoint { get; }
-        string APIKEY { get; }
+        TTaxCalculationResponse CalculateTaxForOrder(TTaxCalculationRequest request);
 
-        bool ValidateTaxRateRequest(TTaxRateRequest request);
-
-        bool ValidateTaxCalculationRequest(TTaxCalculationRequest request);
-
-        string BuildTaxRateAPIUrl(TTaxRateRequest request);
+        TTaxRateResponse GetTaxRate(TTaxRateRequest request);
     }
 }

@@ -73,7 +73,7 @@ namespace TaxCalculationConsoleApp
 
                 try
                 {
-                    TaxJarCalculationResponse result2 = service.GetTaxCalculation(jarCalculationRequest);
+                    TaxJarCalculationResponse result2 = service.GetTaxCalculationForOrder(jarCalculationRequest);
                     Console.WriteLine(result2.Jsonify());
                 }
                 catch (Exception ex)
