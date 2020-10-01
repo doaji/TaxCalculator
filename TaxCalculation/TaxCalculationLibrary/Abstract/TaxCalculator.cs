@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 using TaxCalculationLibrary.Helpers;
 using TaxCalculationLibrary.Interface;
-using TaxCalculationLibrary.Model;
 
 namespace TaxCalculationLibrary.Abstract
 {
@@ -15,11 +8,13 @@ namespace TaxCalculationLibrary.Abstract
                  where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
-        protected static readonly HttpClient httpClient = new HttpClient();
-        protected string TaxCalculationApiEndPoint { get; private set; }
+        #region Protected Fields
 
-        protected string APIKEY { get; private set; }
-        protected string TaxRateApiEndPoint { get; private set; }
+        protected static readonly HttpClient httpClient = new HttpClient();
+
+        #endregion Protected Fields
+
+        #region Public Constructors
 
         public TaxCalculator(string apiKey, string taxCalculationApiEndPoint, string taxRateApiEndPoint)
         {
@@ -28,9 +23,34 @@ namespace TaxCalculationLibrary.Abstract
             TaxRateApiEndPoint = taxRateApiEndPoint;
         }
 
+        #endregion Public Constructors
+
+        #region Protected Properties
+
+        protected string APIKEY { get; private set; }
+        protected string TaxCalculationApiEndPoint { get; private set; }
+        protected string TaxRateApiEndPoint { get; private set; }
+
+        #endregion Protected Properties
+
+        #region Public Methods
+
+        public abstract TTaxCalculationResponse CalculateTaxForOrder(TTaxCalculationRequest request);
+
         public virtual void Dispose()
         {
             APIKEY = TaxCalculationApiEndPoint = TaxRateApiEndPoint = null;
+        }
+
+        public abstract TTaxRateResponse GetTaxRate(TTaxRateRequest request);
+
+        #endregion Public Methods
+
+        #region Protected Methods
+
+        protected virtual bool ValidateTaxCalculationRequest(TTaxCalculationRequest request)
+        {
+            return request != null && TaxCalculationApiEndPoint.IsNotEmpty() && APIKEY.IsNotEmpty();
         }
 
         protected virtual bool ValidateTaxRateRequest(TTaxRateRequest request)
@@ -38,13 +58,6 @@ namespace TaxCalculationLibrary.Abstract
             return request != null && TaxRateApiEndPoint.IsNotEmpty() && APIKEY.IsNotEmpty();
         }
 
-        protected virtual bool ValidateTaxCalculationRequest(TTaxCalculationRequest request)
-        {
-            return request != null && TaxCalculationApiEndPoint.IsNotEmpty() && APIKEY.IsNotEmpty();
-        }
-
-        public abstract TTaxCalculationResponse CalculateTaxForOrder(TTaxCalculationRequest request);
-
-        public abstract TTaxRateResponse GetTaxRate(TTaxRateRequest request);
+        #endregion Protected Methods
     }
 }

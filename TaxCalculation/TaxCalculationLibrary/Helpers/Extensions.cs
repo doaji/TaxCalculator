@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaxCalculationLibrary.Helpers
+﻿namespace TaxCalculationLibrary.Helpers
 {
     public static class Extensions
     {
+        #region Public Methods
+
         public static bool IsEmpty(this string text)
         {
             return string.IsNullOrWhiteSpace(text);
@@ -31,5 +27,7 @@ namespace TaxCalculationLibrary.Helpers
             }
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(item);
         }
+
+        #endregion Public Methods
     }
 }

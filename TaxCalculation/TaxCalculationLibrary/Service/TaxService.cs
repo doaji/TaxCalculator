@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using TaxCalculationLibrary.Helpers;
 using TaxCalculationLibrary.Interface;
 
 namespace TaxCalculationLibrary.Service
@@ -12,12 +7,22 @@ namespace TaxCalculationLibrary.Service
                          where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
+        #region Private Fields
+
         private readonly ITaxCalculator<TTaxRateRequest, TTaxCalculationRequest, TTaxRateResponse, TTaxCalculationResponse> _taxCalculator;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public TaxService(ITaxCalculator<TTaxRateRequest, TTaxCalculationRequest, TTaxRateResponse, TTaxCalculationResponse> taxCalculator)
         {
             _taxCalculator = taxCalculator;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public void Dispose()
         {
@@ -51,5 +56,7 @@ namespace TaxCalculationLibrary.Service
             }
             return _taxCalculator.GetTaxRate(request);
         }
+
+        #endregion Public Methods
     }
 }

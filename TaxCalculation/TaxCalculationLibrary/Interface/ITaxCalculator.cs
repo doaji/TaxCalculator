@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TaxCalculationLibrary.Interface
 {
@@ -13,8 +8,12 @@ namespace TaxCalculationLibrary.Interface
          where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
+        #region Public Methods
+
         TTaxCalculationResponse CalculateTaxForOrder(TTaxCalculationRequest request);
 
         TTaxRateResponse GetTaxRate(TTaxRateRequest request);
+
+        #endregion Public Methods
     }
 }

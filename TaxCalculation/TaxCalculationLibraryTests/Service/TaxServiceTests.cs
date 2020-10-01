@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TaxCalculationLibrary.Service;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaxCalculationLibrary.Model;
 
 namespace TaxCalculationLibrary.Service.Tests

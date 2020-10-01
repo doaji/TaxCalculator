@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TaxCalculationLibrary.Interface
 {
@@ -10,6 +6,8 @@ namespace TaxCalculationLibrary.Interface
                  where TTaxRateResponse : class
         where TTaxCalculationResponse : class
     {
+        #region Public Methods
+
         /// <summary>
         /// Get the sales tax that should be collected for a given order.
         /// </summary>
@@ -23,5 +21,7 @@ namespace TaxCalculationLibrary.Interface
         /// <param name="request"></param>
         /// <returns></returns>
         TTaxRateResponse GetTaxRate(TTaxRateRequest request);
+
+        #endregion Public Methods
     }
 }
